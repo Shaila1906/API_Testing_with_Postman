@@ -47,8 +47,8 @@ The API is simulated using **JSON Server**, a tool that allows you to create a m
 
 - **Clone the repository**:
    ```bash
-   git clone https://github.com/your-username/your-repo-name.git
-   cd your-repo-name
+   git clone https://github.com/shaila1906/API_Testing_with_Postman.git
+   cd API_Testing_with_Postman
 ---
 
 ## Running the API with JSON Server
