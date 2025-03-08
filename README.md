@@ -25,6 +25,8 @@ The API is simulated using **JSON Server**, a tool that allows you to create a m
 │   └── newman_report.html      # Newman HTML report generated after running tests
 ├── db.json                     # JSON Server database file
 └── README.md                   # Project documentation
+├── TEST_CASES.md               # Detail Test Case documentation
+
 ```
 
 ## Getting Started
