@@ -56,7 +56,7 @@ The API is simulated using **JSON Server**, a tool that allows you to create a m
 ## Running the API with JSON Server
 
 ### 1. Set Up JSON Server:
--In the project folder, you will find a ```db.json``` file that acts as the mock database.
+- In the project folder, you will find a ```db.json``` file that acts as the mock database.
 - To run the server, open a terminal and execute the following command:
 
    ```bash
