@@ -1,0 +1,1360 @@
+{
+	"info": {
+		"_postman_id": "d1ebc23b-ecb8-44eb-9998-6347ac71feda",
+		"name": "Basic Requests",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "42355583"
+	},
+	"item": [
+		{
+			"name": "USERS API",
+			"item": [
+				{
+					"name": "GET",
+					"item": [
+						{
+							"name": "GET /users - Fetch all users",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    let statusCode = pm.response.code;\r",
+											"    pm.expect(statusCode).to.equal(200, `❌ Expected 200 OK, but received ${statusCode}`);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Response contains a list of users\", function () {\r",
+											"    let jsonData = pm.response.json();\r",
+											"    pm.expect(jsonData).to.be.an('array');\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Response time is acceptable\", function () {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(1000);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Content-Type application/json is present\", function () {\r",
+											"    pm.response.to.have.header(\"Content-Type\", \"application/json\");\r",
+											"});\r",
+											"\r",
+											"pm.test(\"At least one user exists\", function () {\r",
+											"    let jsonData = pm.response.json();\r",
+											"    pm.expect(jsonData.length).to.be.greaterThan(0);\r",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUserUrl}}",
+									"host": [
+										"{{baseUserUrl}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "GET /users/{id} (Fetch user by ID)",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Response contains correct user details\", function () {\r",
+											"    let jsonData = pm.response.json();\r",
+											"    pm.expect(jsonData).to.have.property(\"id\");\r",
+											"    pm.expect(jsonData).to.have.property(\"name\");\r",
+											"    pm.expect(jsonData).to.have.property(\"email\");\r",
+											"    pm.expect(jsonData.id).to.eql(\"1\");\r",
+											"    pm.expect(jsonData.name).to.eql(\"John Doe\");\r",
+											"    pm.expect(jsonData.email).to.eql(\"john.doe@example.com\");\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Response format is JSON\", function () {\r",
+											"    pm.response.to.have.header(\"Content-Type\", \"application/json\");\r",
+											"});\r",
+											"\r",
+											"\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUserUrl}}/1",
+									"host": [
+										"{{baseUserUrl}}"
+									],
+									"path": [
+										"1"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "GET /users/{id} (Fetch user by ID- Negative TestCase)",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Returns 404 for a non-existing user ID\", function () {\r",
+											"    \r",
+											"    pm.expect(pm.response).to.have.status(404);\r",
+											"    \r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUserUrl}}/9999",
+									"host": [
+										"{{baseUserUrl}}"
+									],
+									"path": [
+										"9999"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "POST",
+					"item": [
+						{
+							"name": "POST /users - Create a new user",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 201\", function () {\r",
+											"    pm.response.to.have.status(201);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"New user is added to the database\", function () {\r",
+											"    let jsonData = pm.response.json();\r",
+											"    pm.expect(jsonData).to.have.property(\"id\");\r",
+											"    pm.expect(jsonData).to.have.property(\"name\");\r",
+											"    pm.expect(jsonData).to.have.property(\"email\");\r",
+											"    pm.expect(jsonData.name).to.eql(\"Alex Carter\");\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Response contains the new user's ID\", function () {\r",
+											"    let jsonData = pm.response.json();\r",
+											"    pm.expect(jsonData.id).to.eql(\"3\");\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Response time is less than 200ms\", function () {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
+											"});\r",
+											"\r",
+											"\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"id\": \"3\",\r\n  \"name\": \"Alex Carter\",\r\n  \"email\": \"alex.carter@example.com\"\r\n}\r\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUserUrl}}",
+									"host": [
+										"{{baseUserUrl}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "POST/users(Negative case01 with no body)",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"let statusCode = pm.response.code;\r",
+											"\r",
+											"// If status code is 201, store the created userId for later deletion\r",
+											"if (statusCode === 201) {\r",
+											"    let responseData = pm.response.json();\r",
+											"    let userId = responseData.id;\r",
+											"\r",
+											"    if (userId) {\r",
+											"        console.log(`⚠️ Unexpected 201 Created - Storing userId: ${userId} for future use`);\r",
+											"\r",
+											"        // Store userId in an environment variable to be used in another request\r",
+											"        pm.environment.set(\"userId\", userId);\r",
+											"    } else {\r",
+											"        console.warn(\"⚠️ User ID not found in response.\");\r",
+											"    }\r",
+											"} \r",
+											"\r",
+											"\r",
+											"pm.test(\"Should return 400 when creating a user without a request body\", function () {\r",
+											"    pm.expect(statusCode).to.equal(400, `❌ Expected 400 Bad Request, but received ${statusCode}`);\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUserUrl}}",
+									"host": [
+										"{{baseUserUrl}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "POST/users(Negative case02 with same email)",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"let statusCode = pm.response.code;\r",
+											"\r",
+											"if (statusCode === 201) {\r",
+											"    console.log(\"Unexpected 201 Created - A user was created when it shouldn't have been.\");\r",
+											"    pm.test(\"Should return 409 when creating a user with an existing email\", function () {\r",
+											"        pm.expect(statusCode).to.equal(409, `❌ Expected 409 Conflict, but received ${statusCode}`);\r",
+											"    }); \r",
+											"} else {\r",
+											"    pm.test(\"Should return 409 when creating a user with an existing email\", function () {\r",
+											"        pm.expect(statusCode).to.equal(409, `❌ Expected 409 Conflict, but received ${statusCode}`);\r",
+											"    });\r",
+											"}\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"name\": \"John Doe\",\r\n    \"email\": \"john@example.com\"\r\n}\r\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUserUrl}}",
+									"host": [
+										"{{baseUserUrl}}"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "PUT",
+					"item": [
+						{
+							"name": "PUT/users/{id} (Update an Existing User - Full Update)",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Should return 200 and update user details successfully\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"    let jsonData = pm.response.json();\r",
+											"    pm.expect(jsonData).to.have.property(\"name\", \"updated John Doe\");\r",
+											"    pm.expect(jsonData).to.have.property(\"email\", \"updated.john.doe@example.com\");\r",
+											"    \r",
+											"});\r",
+											"\r",
+											"pm.test(\"Content-Type application/json is present\", function () {\r",
+											"    pm.response.to.have.header(\"Content-Type\", \"application/json\");\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Response time is acceptable\", function () {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(100);\r",
+											"});\r",
+											"\r",
+											"\r",
+											"\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"id\" : \"1\",\r\n    \"name\" : \"updated John Doe\",\r\n    \"email\" : \"updated.john.doe@example.com\"\r\n     \r\n}\r\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUserUrl}}/1",
+									"host": [
+										"{{baseUserUrl}}"
+									],
+									"path": [
+										"1"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "PUT/users/{id} (Update an Non-existing User)",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Should return 404 when trying to update a non-existing user\", function () {\r",
+											"    pm.response.to.have.status(404);\r",
+											"    let responseBody = pm.response.text();\r",
+											"    pm.expect(responseBody).to.eql(\"Not Found\");\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \r\n    \"name\" : \"updated John Doe\",\r\n    \"email\" : \"updated@example.com\"\r\n     \r\n}\r\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUserUrl}}/999",
+									"host": [
+										"{{baseUserUrl}}"
+									],
+									"path": [
+										"999"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "PUT/users/{id} (Update a User with missing fields)",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Should return 400 when trying to update with missing field\", function () {\r",
+											"    let statusCode = pm.response.code;\r",
+											"    \r",
+											"    let responseBody = pm.response.text();\r",
+											"\r",
+											"    pm.expect(statusCode).to.eql(400, `❌ Expected 400 Bad Request, but received ${statusCode}`);\r",
+											"    pm.expect(responseBody).to.eql(\"Bad Request\");\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \r\n    \"name\" : \"updated Jane Doe\"\r\n     \r\n}\r\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUserUrl}}/2",
+									"host": [
+										"{{baseUserUrl}}"
+									],
+									"path": [
+										"2"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "PATCH",
+					"item": [
+						{
+							"name": "PATCH /users/{id} (Partially Update a User)",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200 OK\", function () {\r",
+											"    let statusCode = pm.response.code;\r",
+											"    pm.expect(statusCode).to.equal(200, `❌ Expected 200 OK, but received ${statusCode}`);\r",
+											"});\r",
+											"\r",
+											"pm.test(\" Only specified fields are updated & the response contains updated values\", function () {\r",
+											"    let jsonData = pm.response.json();\r",
+											"    pm.expect(jsonData).to.have.property(\"name\", \"updated Alex Carter\");\r",
+											"    pm.expect(jsonData).to.have.property(\"email\", \"alex.carter@example.com\"); \r",
+											"});\r",
+											"\r",
+											"pm.test(\"The response time is within acceptable limit\", function () {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(100);\r",
+											"});\r",
+											"\r",
+											"\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"name\" : \"updated Alex Carter\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUserUrl}}/3",
+									"host": [
+										"{{baseUserUrl}}"
+									],
+									"path": [
+										"3"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "PATCH /users/{Non-existing id}",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Should return 404 when trying to update a non-existing user\", function () {\r",
+											"    pm.response.to.have.status(404);\r",
+											"    let responseBody = pm.response.text();\r",
+											"    pm.expect(responseBody).to.eql(\"Not Found\");\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"name\" : \"updated Alex Carter\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUserUrl}}/999",
+									"host": [
+										"{{baseUserUrl}}"
+									],
+									"path": [
+										"999"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "PATCH /users/{id} (with no body)",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Should return 400 for requesting with no body\", function () {\r",
+											"    let statusCode = pm.response.code;\r",
+											"    pm.expect(statusCode).to.equal(400, `❌ Expected 400 Bad Request, but received ${statusCode}`)\r",
+											"    let responseBody = pm.response.text();\r",
+											"    pm.expect(responseBody).to.eql(\"Bad Request\");\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUserUrl}}/1",
+									"host": [
+										"{{baseUserUrl}}"
+									],
+									"path": [
+										"1"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "DELETE",
+					"item": [
+						{
+							"name": "DELETE /users/{id} (Delete a user)",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Should return 200 when user is deleted\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Response time is within acceptable limit\", function () {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(100);\r",
+											"});\r",
+											"\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{baseUserUrl}}/3",
+									"host": [
+										"{{baseUserUrl}}"
+									],
+									"path": [
+										"3"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "DELETE /users/{id} (Delete a user's Confirmation)",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Returns 404 and Confirms the Deletion\", function () {\r",
+											"   \r",
+											"        pm.expect(pm.response.code).to.equal(404);\r",
+											"    });"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUserUrl}}/3",
+									"host": [
+										"{{baseUserUrl}}"
+									],
+									"path": [
+										"3"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "PRODUCTS API",
+			"item": [
+				{
+					"name": "GET",
+					"item": [
+						{
+							"name": "GET /products (Fetch all products)",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Should return 200 OK\", function () {\r",
+											"    let statusCode = pm.response.code;\r",
+											"    pm.expect(statusCode).to.equal(200, `❌ Expected 200 OK, but received ${statusCode}`);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Response should contain an array of products\", function () {\r",
+											"    let jsonData = pm.response.json();\r",
+											"    pm.expect(jsonData).to.be.an(\"array\");\r",
+											"    pm.expect(jsonData.length).to.be.greaterThan(0, \"❌ Expected at least one product, but found none\");\r",
+											"});\r",
+											"\r",
+											"\r",
+											"pm.test(\"Response header should contain 'Content-Type: application/json'\", function () {\r",
+											"    pm.response.to.have.header(\"Content-Type\");\r",
+											"    pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\");\r",
+											"});\r",
+											"\r",
+											"\r",
+											"pm.test(\"Response time is acceptable\", function () {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(100);\r",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseProductUrl}}",
+									"host": [
+										"{{baseProductUrl}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "GET /products/{id} (Fetch product by ID)",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Response contains correct product details\", function () {\r",
+											"    let jsonData = pm.response.json();\r",
+											"    pm.expect(jsonData).to.have.property(\"id\");\r",
+											"    pm.expect(jsonData).to.have.property(\"name\");\r",
+											"    pm.expect(jsonData).to.have.property(\"price\");\r",
+											"    pm.expect(jsonData.name).to.eql(\"Laptop\");\r",
+											"    pm.expect(jsonData.price).to.equal(1000);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Response format is JSON\", function () {\r",
+											"    pm.response.to.have.header(\"Content-Type\", \"application/json\");\r",
+											"});\r",
+											"\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseProductUrl}}/1",
+									"host": [
+										"{{baseProductUrl}}"
+									],
+									"path": [
+										"1"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "GET /products/{id} (Fetch product by non-existing ID)",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Returns 404 for a non-existing product ID\", function () {\r",
+											"    \r",
+											"    pm.expect(pm.response.code).to.equal(404);\r",
+											"    \r",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseProductUrl}}/999",
+									"host": [
+										"{{baseProductUrl}}"
+									],
+									"path": [
+										"999"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "POST",
+					"item": [
+						{
+							"name": "POST /products (Create a new product)",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 201\", function () {\r",
+											"    pm.response.to.have.status(201);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"New product is added to the database\", function () {\r",
+											"    let jsonData = pm.response.json();\r",
+											"    pm.expect(jsonData).to.have.property(\"id\");\r",
+											"    pm.expect(jsonData).to.have.property(\"name\");\r",
+											"    pm.expect(jsonData).to.have.property(\"price\");\r",
+											"    pm.expect(jsonData.name).to.eql(\"Charger\");\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Response contains the new product's ID\", function () {\r",
+											"    let jsonData = pm.response.json();\r",
+											"    pm.expect(jsonData.id).to.eql(\"3\");\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Response time is less than 100ms\", function () {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(100);\r",
+											"});\r",
+											"\r",
+											"\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"id\" : \"3\",\r\n  \"name\" : \"Charger\",\r\n  \"price\" : 300\r\n}\r\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseProductUrl}}",
+									"host": [
+										"{{baseProductUrl}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "POST/products(Negative case01 with no body)",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"let statusCode = pm.response.code;\r",
+											"\r",
+											"// If status code is 201, store the created productId for later deletion\r",
+											"if (statusCode === 201) {\r",
+											"    let responseData = pm.response.json();\r",
+											"    let productId = responseData.id;\r",
+											"\r",
+											"    if (productId) {\r",
+											"        console.log(`⚠️ Unexpected 201 Created - Storing productId: ${productId} for future use`);\r",
+											"\r",
+											"        // Store productId in an environment variable to be used in another request\r",
+											"        pm.environment.set(\"productId\", productId);\r",
+											"    } else {\r",
+											"        console.warn(\"⚠️ product ID not found in response.\");\r",
+											"    }\r",
+											"} \r",
+											"\r",
+											"\r",
+											"pm.test(\"Should return 400 when creating a product without a request body\", function () {\r",
+											"    pm.expect(statusCode).to.equal(400, `❌ Expected 400 Bad Request, but received ${statusCode}`);\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseProductUrl}}",
+									"host": [
+										"{{baseProductUrl}}"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "PUT",
+					"item": [
+						{
+							"name": "PUT/products/{id} (Update an Existing Product - Full Update)",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Should return 200 and update product details successfully\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"    let jsonData = pm.response.json();\r",
+											"    pm.expect(jsonData).to.have.property(\"name\", \"updated Laptop\");\r",
+											"    pm.expect(jsonData).to.have.property(\"price\", 1001);\r",
+											"    \r",
+											"});\r",
+											"\r",
+											"pm.test(\"Content-Type application/json is present\", function () {\r",
+											"    pm.response.to.have.header(\"Content-Type\", \"application/json\");\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Response time is acceptable\", function () {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(100);\r",
+											"});\r",
+											"\r",
+											"\r",
+											"\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"id\" : \"1\",\r\n    \"name\" : \"updated Laptop\",\r\n    \"price\" : 1001\r\n     \r\n}\r\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseProductUrl}}/1",
+									"host": [
+										"{{baseProductUrl}}"
+									],
+									"path": [
+										"1"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "PUT/products/{id} (Update an Non-existing product)",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Should return 404 when trying to update a non-existing product\", function () {\r",
+											"    pm.response.to.have.status(404);\r",
+											"    let responseBody = pm.response.text();\r",
+											"    pm.expect(responseBody).to.eql(\"Not Found\");\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"id\" : \"999\",\r\n    \"name\" : \"updated Charger\",\r\n    \"price\" : 300\r\n     \r\n}\r\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseProductUrl}}/999",
+									"host": [
+										"{{baseProductUrl}}"
+									],
+									"path": [
+										"999"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "PUT/products/{id} (Update a Product with missing fields)",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Should return 400 when trying to update with missing field\", function () {\r",
+											"    let statusCode = pm.response.code;\r",
+											"    \r",
+											"    let responseBody = pm.response.text();\r",
+											"\r",
+											"    pm.expect(statusCode).to.eql(400, `❌ Expected 400 Bad Request, but received ${statusCode}`);\r",
+											"    pm.expect(responseBody).to.eql(\"Bad Request\");\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \r\n    \"name\" : \"updated Charger\"\r\n     \r\n}\r\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseProductUrl}}/3",
+									"host": [
+										"{{baseProductUrl}}"
+									],
+									"path": [
+										"3"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "PATCH",
+					"item": [
+						{
+							"name": "PATCH /products/{id} (Partially Update a Product)",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200 OK\", function () {\r",
+											"    let statusCode = pm.response.code;\r",
+											"    pm.expect(statusCode).to.equal(200, `❌ Expected 200 OK, but received ${statusCode}`);\r",
+											"});\r",
+											"\r",
+											"pm.test(\" Only specified fields are updated & the response contains updated values\", function () {\r",
+											"    let jsonData = pm.response.json();\r",
+											"    pm.expect(jsonData).to.have.property(\"name\", \"updated Phone\");\r",
+											"    pm.expect(jsonData).to.have.property(\"price\", 500); \r",
+											"});\r",
+											"\r",
+											"pm.test(\"The response time is within acceptable limit\", function () {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(100);\r",
+											"});\r",
+											"\r",
+											"\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"name\" : \"updated Phone\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseProductUrl}}/2",
+									"host": [
+										"{{baseProductUrl}}"
+									],
+									"path": [
+										"2"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "PATCH /products/{Non-existing id}",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Should return 404 when trying to update a non-existing product\", function () {\r",
+											"    pm.response.to.have.status(404);\r",
+											"    let responseBody = pm.response.text();\r",
+											"    pm.expect(responseBody).to.eql(\"Not Found\");\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"name\" : \"updated charger\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseProductUrl}}/999",
+									"host": [
+										"{{baseProductUrl}}"
+									],
+									"path": [
+										"999"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "PATCH /products/{id} (with no body)",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Should return 400 for requesting with no body\", function () {\r",
+											"    let statusCode = pm.response.code;\r",
+											"    pm.expect(statusCode).to.equal(400, `❌ Expected 400 Bad Request, but received ${statusCode}`)\r",
+											"    let responseBody = pm.response.text();\r",
+											"    pm.expect(responseBody).to.eql(\"Bad Request\");\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseProductUrl}}/1",
+									"host": [
+										"{{baseProductUrl}}"
+									],
+									"path": [
+										"1"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "DELETE",
+					"item": [
+						{
+							"name": "DELETE /products/{id} (Delete a product)",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Should return 200 when product is deleted\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Response time is within acceptable limit\", function () {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(100);\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{baseProductUrl}}/3",
+									"host": [
+										"{{baseProductUrl}}"
+									],
+									"path": [
+										"3"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "DELETE /products/{id} (Delete a product's Confirmation)",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Returns 404 and Confirm previous DELETE\", function () {\r",
+											"        pm.expect(pm.response.code).to.equal(404);\r",
+											"    \r",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseProductUrl}}/3",
+									"host": [
+										"{{baseProductUrl}}"
+									],
+									"path": [
+										"3"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		}
+	]
+}
